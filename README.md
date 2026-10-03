@@ -1,5 +1,9 @@
 # Agent Skill Safety Auditor
 
+[![CI](https://github.com/alptugharun/agent-skill-safety-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/alptugharun/agent-skill-safety-auditor/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/alptugharun/agent-skill-safety-auditor/actions/workflows/codeql.yml/badge.svg)](https://github.com/alptugharun/agent-skill-safety-auditor/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/alptugharun/agent-skill-safety-auditor/badge)](https://scorecard.dev/viewer/?uri=github.com/alptugharun/agent-skill-safety-auditor)
+
 [![English](https://img.shields.io/badge/English-0D1117?style=flat-square)](README.md) [![Türkçe](https://img.shields.io/badge/Türkçe-E30A17?style=flat-square)](README_TR.md)
 
 <p align="center">
