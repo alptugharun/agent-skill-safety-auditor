@@ -1,0 +1,38 @@
+name: Feature request
+description: Propose a focused improvement with a concrete user job.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: What job is currently difficult or impossible?
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current workaround
+      description: How do you handle it today?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Smallest useful change
+      description: Prefer a narrow capability over a broad framework expansion.
+    validations:
+      required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: How should we verify it?
+      description: Suggest a reproducible test, example, or acceptance check.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - label: This request does not require invented metrics, hidden permissions, or unsupported compatibility claims.
+          required: true
