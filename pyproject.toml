@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-skill-safety-auditor"
+version = "0.1.0a1"
+description = "Offline safety and permission audit for Agent Skills before installation."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "Alptuğ Harun" }]
+keywords = ["agent-skills", "security", "ai-agents", "claude-code", "codex", "mcp"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Security"
+]
+
+[project.scripts]
+skill-audit = "skill_safety_auditor.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/alptugharun/agent-skill-safety-auditor"
+Repository = "https://github.com/alptugharun/agent-skill-safety-auditor"
+Issues = "https://github.com/alptugharun/agent-skill-safety-auditor/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
