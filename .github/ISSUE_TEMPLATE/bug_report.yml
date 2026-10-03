@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem in the Agent Skill auditor.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for helping make this project more reliable. Please use public-safe data only."
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Tag, version, or commit SHA where you saw the problem.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Python/runtime version, and relevant host/client version.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Minimal reproduction
+      description: Exact commands or steps using synthetic/public-safe input.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the smallest useful error excerpt. Remove secrets and private data.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed tokens, cookies, private files, client data, and other secrets.
+          required: true
+        - label: I checked existing issues/discussions for the same problem.
+          required: true
