@@ -28,6 +28,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("pip wheel", self.text)
         self.assertIn("--no-deps dist/*.whl", self.text)
         self.assertIn("skill-audit --help", self.text)
+        self.assertIn("/tmp/safety-auditor-release/bin/python -m unittest discover -s tests -v", self.text)
         self.assertIn("import skill_safety_auditor", self.text)
 
     def test_release_publishes_checksum_and_sigstore_bundles(self):
