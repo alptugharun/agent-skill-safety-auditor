@@ -29,18 +29,16 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run tests
-        run: python -m unittest discover -s tests -v
-
       - name: Build wheel
         run: python -m pip wheel --disable-pip-version-check --no-deps . --wheel-dir dist
 
-      - name: Verify wheel in a clean environment
+      - name: Test the exact wheel in a clean environment
         shell: bash
         run: |
           set -euo pipefail
           python -m venv /tmp/safety-auditor-release
           /tmp/safety-auditor-release/bin/python -m pip install --disable-pip-version-check --no-deps dist/*.whl
+          /tmp/safety-auditor-release/bin/python -m unittest discover -s tests -v
           /tmp/safety-auditor-release/bin/skill-audit --help >/tmp/skill-audit-help.txt
           grep -q 'Offline heuristic audit' /tmp/skill-audit-help.txt
           /tmp/safety-auditor-release/bin/python -c 'import skill_safety_auditor'
