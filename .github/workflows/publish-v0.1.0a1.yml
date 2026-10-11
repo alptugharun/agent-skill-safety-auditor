@@ -1,0 +1,91 @@
+name: Publish v0.1.0a1 Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "releases/v0.1.0a1.md"
+      - ".github/workflows/publish-v0.1.0a1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.11"
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build wheel
+        run: python -m pip wheel --disable-pip-version-check --no-deps . --wheel-dir dist
+
+      - name: Verify wheel in a clean environment
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv /tmp/safety-auditor-release
+          /tmp/safety-auditor-release/bin/python -m pip install --disable-pip-version-check --no-deps dist/*.whl
+          /tmp/safety-auditor-release/bin/skill-audit --help >/tmp/skill-audit-help.txt
+          grep -q 'Offline heuristic audit' /tmp/skill-audit-help.txt
+          /tmp/safety-auditor-release/bin/python -c 'import skill_safety_auditor'
+
+      - name: Create checksum manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd dist && sha256sum *.whl > SHA256SUMS.txt)
+          cat dist/SHA256SUMS.txt
+
+      - name: Sign wheel and checksum with Sigstore
+        uses: sigstore/gh-action-sigstore-python@790bc6befb9d733738f18d8f895854b453640ec9 # v3.5.0
+        with:
+          inputs: |
+            dist/*.whl
+            dist/SHA256SUMS.txt
+          upload-signing-artifacts: true
+          release-signing-artifacts: false
+
+      - name: Publish prerelease and assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v0.1.0a1
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! gh release view "$TAG" >/dev/null 2>&1; then
+            gh release create "$TAG" \
+              --target "$GITHUB_SHA" \
+              --title "Agent Skill Safety Auditor v0.1.0a1" \
+              --notes-file releases/v0.1.0a1.md \
+              --prerelease
+          fi
+          gh release upload "$TAG" dist/* --clobber
+
+      - name: Verify public assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v0.1.0a1
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/releases/tags/$TAG" --jq '.assets[].name' > /tmp/assets.txt
+          grep -q '^agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl$' /tmp/assets.txt
+          grep -q '^SHA256SUMS.txt$' /tmp/assets.txt
+          grep -q '\.whl.sigstore.json$' /tmp/assets.txt
+          grep -q '^SHA256SUMS.txt.sigstore.json$' /tmp/assets.txt
