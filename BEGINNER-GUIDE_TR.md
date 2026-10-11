@@ -77,7 +77,17 @@ API key gerekmez.
 
 ---
 
-## 5. Kur
+## 5. Kurulum
+
+### En kolay tekrar üretilebilir yol: imzalı wheel
+
+```bash
+python -m pip install "https://github.com/alptugharun/agent-skill-safety-auditor/releases/download/v0.1.0a1/agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl"
+```
+
+Release SHA256 checksum ve Sigstore bundle dosyaları yayınlar.
+
+### Alternatif: kaynak koddan kur
 
 ```bash
 git clone https://github.com/alptugharun/agent-skill-safety-auditor.git
