@@ -42,7 +42,17 @@ It does not call an LLM. It does not upload the skill. It does not label a proje
 
 The result is **evidence for manual review**, not a security certification.
 
-## Install locally
+## Install
+
+### Versioned signed wheel
+
+```bash
+python -m pip install "https://github.com/alptugharun/agent-skill-safety-auditor/releases/download/v0.1.0a1/agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl"
+```
+
+The release also includes SHA256 and Sigstore verification artifacts.
+
+### Editable source checkout
 
 ```bash
 python -m pip install -e .
