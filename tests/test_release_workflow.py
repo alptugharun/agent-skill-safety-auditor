@@ -32,7 +32,7 @@ class ReleaseWorkflowTests(unittest.TestCase):
 
     def test_release_publishes_checksum_and_sigstore_bundles(self):
         self.assertIn("SHA256SUMS.txt", self.text)
-        self.assertIn("*.whl.sigstore.json", self.text)
+        self.assertIn("\\.whl.sigstore.json$", self.text)
         self.assertIn("v0.1.0a1", self.text)
 
 
