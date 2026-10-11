@@ -4,6 +4,8 @@
 
 **Bir Agent Skill'i kurmadan önce ne istediğini gör.**
 
+**Agent Skill/güvenlik incelemesini hiç bilmiyor musun?** [Sıfırdan Kullanım Rehberi](BEGINNER-GUIDE_TR.md) tehdit modelini, kurulumu, ilk taramayı, risk seviyelerini ve runtime-drift sınırını adım adım anlatır.
+
 Agent Skills yalnızca metin değildir. Bir skill; script çalıştırabilir, environment variable okuyabilir, dış servislere bağlanabilir veya beklemediğin dosyalara erişim isteyebilir.
 
 Agent Skill Safety Auditor, bir skill klasörünü **yerel ve offline** olarak inceler. Kodu bir LLM'e göndermez ve tek bir regex eşleşmesi yüzünden projeye "zararlı" etiketi yapıştırmaz.

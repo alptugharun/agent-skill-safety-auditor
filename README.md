@@ -8,6 +8,8 @@
 
 <p align="center">
   <strong>Inspect Agent Skills before you install them.</strong>
+
+**New to Agent Skills/security review?** Use the [Beginner Guide](BEGINNER-GUIDE.md) for the threat model, installation, first audit, risk levels, runtime-drift limitation and reporting path.
 </p>
 
 <p align="center">
@@ -104,6 +106,8 @@ The test suite includes safe, suspicious, lifecycle-hook, ignored-directory, and
 ## Design rule
 
 **Inspect first. Grant the minimum. Execute only what you understand.**
+
+Static review is an install-time layer. It cannot prove future runtime behavior of remote services or dependencies.
 
 ## Origin
 
