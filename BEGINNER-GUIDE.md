@@ -82,7 +82,17 @@ The scanner itself does not need an API key.
 
 ---
 
-## 5. Install from source
+## 5. Install
+
+### Easiest reproducible route: signed wheel
+
+```bash
+python -m pip install "https://github.com/alptugharun/agent-skill-safety-auditor/releases/download/v0.1.0a1/agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl"
+```
+
+The release publishes a SHA256 checksum plus Sigstore bundles.
+
+### Or install from source
 
 ```bash
 git clone https://github.com/alptugharun/agent-skill-safety-auditor.git
