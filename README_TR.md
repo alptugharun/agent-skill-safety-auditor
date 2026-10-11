@@ -27,6 +27,16 @@ Agent Skill Safety Auditor, bir skill klasörünü **yerel ve offline** olarak i
 
 ## Kurulum
 
+### Sürümlü ve imzalı wheel
+
+```bash
+python -m pip install "https://github.com/alptugharun/agent-skill-safety-auditor/releases/download/v0.1.0a1/agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl"
+```
+
+Release içinde SHA256 ve Sigstore doğrulama dosyaları da bulunur.
+
+### Editable kaynak kod kurulumu
+
 ```bash
 python -m pip install -e .
 ```
