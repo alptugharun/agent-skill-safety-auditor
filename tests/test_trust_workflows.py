@@ -16,7 +16,7 @@ class TrustWorkflowTests(unittest.TestCase):
 
     def test_scorecard_action_is_pinned_and_results_are_published(self):
         self.assertIn(
-            "ossf/scorecard-action@2d1146689b8cda280b9bc96326124645441f03bc",
+            "ossf/scorecard-action@fa7117db83c52d787ae5a89f350999701505d78e",
             self.text,
         )
         self.assertIn("publish_results: true", self.text)
