@@ -62,6 +62,47 @@ class AuditTests(unittest.TestCase):
         self.assertIn("shell-or-process", codes)
         self.assertEqual("MODERATE", report.risk)
 
+    def make_symlink_or_skip(self, link: Path, target: Path):
+        try:
+            link.symlink_to(target)
+        except (OSError, NotImplementedError) as exc:
+            self.skipTest(f"symlink creation unavailable in this test environment: {exc}")
+
+    def test_file_symlink_is_reported_without_reading_external_target(self):
+        root = self.make_skill({"SKILL.md": SAFE_SKILL})
+        outside = tempfile.TemporaryDirectory()
+        self.addCleanup(outside.cleanup)
+        secret = Path(outside.name) / "outside-secret.txt"
+        marker = "DO_NOT_EXPOSE_EXTERNAL_SECRET_4931"
+        secret.write_text(marker, encoding="utf-8")
+        self.make_symlink_or_skip(root / "linked.txt", secret)
+
+        report = audit_directory(root)
+        self.assertEqual("MODERATE", report.risk)
+        self.assertTrue(
+            any(item.code == "symlink-skipped" and item.path == "linked.txt" for item in report.findings)
+        )
+        self.assertNotIn(marker, report.to_json())
+        self.assertNotIn(marker, report.to_markdown())
+        self.assertEqual(1, report.files_scanned)
+
+    def test_symlinked_skill_entrypoint_is_not_followed(self):
+        root = self.make_skill({})
+        outside = tempfile.TemporaryDirectory()
+        self.addCleanup(outside.cleanup)
+        external_skill = Path(outside.name) / "SKILL.md"
+        external_skill.write_text(SAFE_SKILL, encoding="utf-8")
+        self.make_symlink_or_skip(root / "SKILL.md", external_skill)
+
+        report = audit_directory(root)
+        self.assertIsNone(report.skill_name)
+        self.assertFalse(report.description_present)
+        self.assertFalse(report.license_present)
+        self.assertTrue(
+            any(item.code == "symlink-skipped" and item.path == "SKILL.md" for item in report.findings)
+        )
+        self.assertNotIn("safe-writer", report.to_json())
+
     def test_node_modules_is_ignored(self):
         root = self.make_skill({
             "SKILL.md": SAFE_SKILL,
