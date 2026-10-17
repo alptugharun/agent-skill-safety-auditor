@@ -166,8 +166,25 @@ def parse_frontmatter(text: str) -> dict[str, str]:
         data[key.strip()] = value.strip().strip('"').strip("'")
     return data
 
+def iter_symlinks(root: Path):
+    for path in root.rglob("*"):
+        relative = path.relative_to(root)
+        if any(part in SKIP_DIRS for part in relative.parts):
+            continue
+        try:
+            if path.is_symlink():
+                yield path
+        except OSError:
+            continue
+
+
 def iter_text_files(root: Path):
     for path in root.rglob("*"):
+        try:
+            if path.is_symlink():
+                continue
+        except OSError:
+            continue
         if not path.is_file():
             continue
         relative = path.relative_to(root)
@@ -200,7 +217,21 @@ def audit_directory(root: Path) -> AuditReport:
     description_present = False
     license_present = False
 
-    if not skill_file.is_file():
+    for symlink in iter_symlinks(root):
+        findings.append(
+            Finding(
+                severity="MODERATE",
+                code="symlink-skipped",
+                path=symlink.relative_to(root).as_posix(),
+                line=1,
+                evidence="symbolic link not followed",
+                explanation="The auditor does not follow symbolic links because they can escape the target skill directory or hide content outside the inspected package.",
+            )
+        )
+
+    if skill_file.is_symlink():
+        pass
+    elif not skill_file.is_file():
         findings.append(
             Finding(
                 severity="MODERATE",

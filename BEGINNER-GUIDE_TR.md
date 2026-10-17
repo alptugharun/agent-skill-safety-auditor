@@ -51,6 +51,14 @@ Ama çalıştırmadan önce anlaşılmalıdır.
 
 Bulgu somut dosya/satır/evidence ile manuel inceleme içindir.
 
+### Symlink sınırı
+
+Symbolic link'ler **takip edilmez**. Hedef klasörde symlink varsa rapor link path'i için `symlink-skipped` MODERATE bulgusu üretir; linkin gösterdiği dış dosyayı okumaz.
+
+Neden: güvenilmeyen bir paket kendi klasörünün içine, denetlediğin klasörün dışındaki bir dosyaya işaret eden link koyabilir. Bunu takip etmek seçtiğin kapsamı genişletir ve alakasız yerel veriyi açığa çıkarabilir.
+
+Bu davranışın PASS olması dış hedef içeriğinin audit raporuna girmediğini kanıtlar. Linkin gösterdiği hedefin güvenli olduğunu kanıtlamaz.
+
 ---
 
 ## 3. Ne yapmaz?

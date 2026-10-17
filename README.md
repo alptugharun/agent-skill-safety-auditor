@@ -38,7 +38,10 @@ It does not call an LLM. It does not upload the skill. It does not label a proje
 - network access;
 - environment-variable reads;
 - encoded payload handling;
-- Node package install lifecycle hooks.
+- Node package install lifecycle hooks;
+- symbolic links, which are reported but **never followed** during the audit.
+
+The symlink boundary is deliberate: a file link inside an untrusted skill can point outside the skill directory. The auditor reports the link path as a MODERATE review item without reading or printing the external target's contents.
 
 The result is **evidence for manual review**, not a security certification.
 

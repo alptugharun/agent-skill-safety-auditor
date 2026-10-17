@@ -50,6 +50,14 @@ The scanner looks for evidence such as:
 
 A finding includes concrete evidence for review.
 
+### Symlink boundary
+
+Symbolic links are **not followed**. If the target folder contains a symlink, the report adds a `symlink-skipped` MODERATE finding for the link path and does not read the linked target.
+
+Why: an untrusted package can place a link inside its folder that points to a file outside the package. Following it would expand the audit beyond the directory you chose and could expose unrelated local data.
+
+PASS for this behavior proves the external target contents were not included in the audit report. It does not prove the linked target itself is safe.
+
 ---
 
 ## 3. What it does NOT do
