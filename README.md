@@ -131,3 +131,7 @@ Built by **Alptuğ Harun**.
 ## License
 
 MIT.
+
+## Historical alpha release
+
+The published `v0.1.0a1` wheel and associated files must not be rebuilt or overwritten under that tag. The former publishing workflow now **only checks the public GitHub release metadata**: prerelease status, four expected asset names, nonzero sizes and digest-field format. It does not download files or prove their hashes, Sigstore signatures, build provenance or runtime safety. Verify actual downloaded bytes separately using release verification materials. A future release needs a distinct tag and an independently tested build. Maintainers can exercise synthetic inputs with `python -m unittest discover -s tests -p 'test_historical_release_metadata.py' -v`. Report sensitive concerns via [SECURITY.md](SECURITY.md) and packaging errors through GitHub issues.

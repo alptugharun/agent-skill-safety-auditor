@@ -85,3 +85,7 @@ Bu proje [AI Social Media Toolkit](https://github.com/alptugharun/ai-social-medi
 ## Lisans
 
 MIT.
+
+## Geçmiş alfa sürümü
+
+Yayımlanmış `v0.1.0a1` wheel ve ilgili dosyaların aynı etiket altında yeniden oluşturulması veya üzerlerine yazılması uygun değildir. Eski yayın iş akışı artık **yalnızca GitHub sürüm üst verilerini okur**: ön sürüm durumu, beklenen dört dosya adı, pozitif boyutlar ve özet alanının biçimi. Dosya indirmez; gerçek baytları, SHA256 eşleşmesini, Sigstore imzasını, derleme kaynağını veya çalışma güvenliğini doğrulamaz. İndirilen dosyalar, sürüm doğrulama belgeleriyle ayrıca sınanmalıdır. Yeni sürüm için farklı etiket ve bağımsız test edilmiş derleme gerekir. Bakımcılar sentetik örnekleri `python -m unittest discover -s tests -p 'test_historical_release_metadata.py' -v` ile kontrol edebilir. Hassas bildirimler için [SECURITY.md](SECURITY.md), diğer paketleme hataları için GitHub issues kullanılabilir.
