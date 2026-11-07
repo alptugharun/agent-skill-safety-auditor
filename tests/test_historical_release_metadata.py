@@ -14,9 +14,11 @@ spec.loader.exec_module(module)
 
 
 def sample():
-    return {"tag_name": "v0.1.0a1", "draft": False, "prerelease": True,
-            "assets": [{"name": n, "size": 100, "digest": "sha256:" + "a" * 64}
-                       for n in module.EXPECTED]}
+    return {"id": module.RELEASE_ID, "tag_name": "v0.1.0a1",
+            "draft": False, "prerelease": True,
+            "assets": [{"name": name, "id": metadata["id"], "size": metadata["size"],
+                        "state": "uploaded", "digest": metadata["digest"]}
+                       for name, metadata in module.EXPECTED.items()]}
 
 
 class ReleaseMetadataTests(unittest.TestCase):
@@ -54,10 +56,24 @@ class ReleaseMetadataTests(unittest.TestCase):
             with self.subTest(data=data), self.assertRaises(ValueError):
                 module.validate(data)
 
-    def test_additional_asset_permitted(self):
+    def test_unexpected_asset_fails(self):
         data = sample()
-        data["assets"].append({"name": "notes.txt"})
-        self.assertEqual(module.validate(data), 5)
+        data["assets"].append({"name": "notes.txt", "id": 999, "size": 10,
+                               "state": "uploaded", "digest": "sha256:" + "a" * 64})
+        with self.assertRaisesRegex(ValueError, "unexpected asset"):
+            module.validate(data)
+
+    def test_metadata_drift_fails_even_with_valid_digest_syntax(self):
+        for field, value in (("id", 0), ("size", 99999), ("state", "starter"),
+                             ("digest", "sha256:" + "b" * 64)):
+            data = sample()
+            data["assets"][0][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                module.validate(data)
+        data = sample()
+        data["id"] = 0
+        with self.assertRaisesRegex(ValueError, "release identity"):
+            module.validate(data)
 
     def test_cli_output_states_limitations_and_fails_closed(self):
         good = subprocess.run([sys.executable, str(SCRIPT)], input=json.dumps(sample()),
