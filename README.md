@@ -131,3 +131,9 @@ Built by **Alptuğ Harun**.
 ## License
 
 MIT.
+
+## Historical alpha release
+
+The published `v0.1.0a1` wheel and its related files must not be rebuilt or overwritten under the same tag. The retired publisher is now a **read-only GitHub metadata drift check**. Its baseline is the public GitHub API listing recorded on **2026-11-07**: release ID, exactly four asset names and asset IDs, uploaded states, exact sizes and reported SHA256 digest strings. It fails if a later GitHub listing differs. A second read-only check compares the historical lightweight tag ref to commit `bfdd79cc3c66669de21df1056503ccf6a100909c` as observed on **2026-11-08**, so a moved tag is also flagged. The recorded values are a snapshot **not an independently trusted build or file-byte baseline**. A passing check does not establish that the tag or files were authentic on either snapshot date, or verify downloaded bytes, hashes calculated locally, Sigstore signatures, provenance or runtime safety. This does not enable native GitHub release immutability or prevent an administrator changing the tag.
+
+Use a distinct version and independently tested build for any future release. Test the synthetic drift checks locally with `python -m unittest discover -s tests -p 'test_historical_release_metadata.py' -v`. Report sensitive concerns via [SECURITY.md](SECURITY.md) and ordinary packaging errors through GitHub issues.
