@@ -41,3 +41,12 @@ jobs:
           set -euo pipefail
           gh api "repos/${GITHUB_REPOSITORY}/releases/tags/v0.1.0a1" \
             | python scripts/verify_historical_release_metadata.py
+
+      - name: Inspect historical tag ref (read only)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/v0.1.0a1" \
+            | python scripts/verify_historical_release_metadata.py --tag-ref

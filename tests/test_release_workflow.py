@@ -32,6 +32,8 @@ class HistoricalReleaseWorkflowTests(unittest.TestCase):
         self.assertIn("scripts/verify_historical_release_metadata.py", self.text)
         self.assertIn('gh api "repos/${GITHUB_REPOSITORY}/releases/tags/v0.1.0a1"', self.text)
         self.assertIn("test_historical_release_metadata.py", self.text)
+        self.assertIn('gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/v0.1.0a1"', self.text)
+        self.assertIn("verify_historical_release_metadata.py --tag-ref", self.text)
 
 
 if __name__ == "__main__":

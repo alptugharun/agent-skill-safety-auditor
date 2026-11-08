@@ -8,6 +8,9 @@ from collections.abc import Mapping
 TAG = "v0.1.0a1"
 # Baseline: GitHub API metadata read on 2026-11-07; NOT independently verified bytes.
 RELEASE_ID = 402532112
+# GitHub tag-ref snapshot read on 2026-11-08; not trusted signed provenance.
+TAG_REF = "refs/tags/v0.1.0a1"
+TAG_COMMIT_SHA = "bfdd79cc3c66669de21df1056503ccf6a100909c"
 EXPECTED = {
     "agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl": {"id": 631804714, "size": 9165, "digest": "sha256:5caef93fe1380832a3f236897146b4d78bcae077ba9993035162e6dbfda21e08"},
     "agent_skill_safety_auditor-0.1.0a1-py3-none-any.whl.sigstore.json": {"id": 631804718, "size": 11714, "digest": "sha256:a10f2e51a305c9b56aa34dea741fc7373d265cc18ee0a8eaaf5934960dcc95d3"},
@@ -58,14 +61,37 @@ def validate(payload):
     return len(assets)
 
 
+def validate_tag_ref(payload):
+    """Detect drift of the lightweight historical tag reference, not authenticity."""
+    if not isinstance(payload, Mapping) or payload.get("ref") != TAG_REF:
+        raise ValueError("wrong tag ref or invalid response")
+    obj = payload.get("object")
+    if not isinstance(obj, Mapping) or obj.get("type") != "commit":
+        raise ValueError("unexpected historical tag object type")
+    if obj.get("sha") != TAG_COMMIT_SHA:
+        raise ValueError("historical tag target changed")
+    return obj["sha"]
+
+
 def main():
+    tag_mode = len(sys.argv) == 2 and sys.argv[1] == "--tag-ref"
+    if len(sys.argv) > 2 or (len(sys.argv) == 2 and not tag_mode):
+        print("Usage: verifier [--tag-ref]", file=sys.stderr)
+        return 2
     try:
-        count = validate(json.load(sys.stdin))
+        payload = json.load(sys.stdin)
+        if tag_mode:
+            target_sha = validate_tag_ref(payload)
+        else:
+            count = validate(payload)
     except (json.JSONDecodeError, ValueError) as error:
         print("Release metadata FAILED: " + str(error), file=sys.stderr)
         return 1
-    print(f"{TAG}: {count} assets listed; four expected assets have metadata.")
-    print("Metadata only; downloaded bytes, checksums, signatures, provenance and runtime NOT verified.")
+    if tag_mode:
+        print(f"{TAG}: tag ref points to {target_sha} (snapshot comparison only).")
+    else:
+        print(f"{TAG}: {count} assets listed; four expected assets have metadata.")
+    print("Metadata only; tag history, downloaded bytes, checksums, signatures, provenance and runtime NOT verified.")
     return 0
 
 

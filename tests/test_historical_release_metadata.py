@@ -21,6 +21,11 @@ def sample():
                        for name, metadata in module.EXPECTED.items()]}
 
 
+def tag_sample():
+    return {"ref": module.TAG_REF,
+            "object": {"type": "commit", "sha": module.TAG_COMMIT_SHA}}
+
+
 class ReleaseMetadataTests(unittest.TestCase):
     def test_complete_synthetic_release(self):
         self.assertEqual(module.validate(sample()), 4)
@@ -84,6 +89,31 @@ class ReleaseMetadataTests(unittest.TestCase):
                              text=True, capture_output=True)
         self.assertNotEqual(bad.returncode, 0)
         self.assertIn("FAILED", bad.stderr)
+
+    def test_tag_ref_snapshot_and_drift(self):
+        self.assertEqual(module.validate_tag_ref(tag_sample()), module.TAG_COMMIT_SHA)
+        for payload in (None, {}, [], {"ref": module.TAG_REF, "object": None},
+                        {"ref": "refs/tags/v0.1.0a2", "object": tag_sample()["object"]},
+                        {"ref": module.TAG_REF, "object": {"type": "tag", "sha": module.TAG_COMMIT_SHA}},
+                        {"ref": module.TAG_REF, "object": {"type": "commit", "sha": "a" * 40}}):
+            with self.subTest(payload=payload), self.assertRaises(ValueError):
+                module.validate_tag_ref(payload)
+
+    def test_tag_ref_cli_fails_closed(self):
+        good = subprocess.run([sys.executable, str(SCRIPT), "--tag-ref"],
+                              input=json.dumps(tag_sample()), text=True, capture_output=True)
+        self.assertEqual(good.returncode, 0, good.stderr)
+        self.assertIn(module.TAG_COMMIT_SHA, good.stdout)
+        self.assertIn("NOT verified", good.stdout)
+        mutated = tag_sample()
+        mutated["object"]["sha"] = "b" * 40
+        bad = subprocess.run([sys.executable, str(SCRIPT), "--tag-ref"],
+                             input=json.dumps(mutated), text=True, capture_output=True)
+        self.assertNotEqual(bad.returncode, 0)
+        self.assertIn("historical tag target changed", bad.stderr)
+        wrong_option = subprocess.run([sys.executable, str(SCRIPT), "--unknown"],
+                                      input=json.dumps(tag_sample()), text=True, capture_output=True)
+        self.assertEqual(wrong_option.returncode, 2)
 
 
 if __name__ == "__main__":
